@@ -1,5 +1,7 @@
 module github.com/Niamsy/go-socket.io
 
+go 1.13
+
 require (
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/ajg/form v1.5.1 // indirect
