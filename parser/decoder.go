@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"reflect"
@@ -57,6 +58,7 @@ func (d *Decoder) DiscardLast() (err error) {
 func (d *Decoder) DecodeHeader(header *Header, event *string) error {
 	ft, r, err := d.r.NextReader()
 	if err != nil {
+		fmt.Println("Next reader err: ", err)
 		return err
 	}
 	if ft != engineio.TEXT {
@@ -71,6 +73,7 @@ func (d *Decoder) DecodeHeader(header *Header, event *string) error {
 
 	bufferCount, err := d.readHeader(header)
 	if err != nil {
+		fmt.Println("Read header err: ", err)
 		return err
 	}
 	d.bufferCount = bufferCount
@@ -80,6 +83,7 @@ func (d *Decoder) DecodeHeader(header *Header, event *string) error {
 	d.isEvent = header.Type == Event
 	if d.isEvent {
 		if err := d.readEvent(event); err != nil {
+			fmt.Println("Read event err: ", err)
 			return err
 		}
 	}

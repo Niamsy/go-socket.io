@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"reflect"
 	"sync"
@@ -33,6 +34,7 @@ func (e *Encoder) Encode(h Header, args []interface{}) (err error) {
 	var w io.WriteCloser
 	w, err = e.w.NextWriter(engineio.TEXT)
 	if err != nil {
+		fmt.Println("Next writer err: ", err)
 		return
 	}
 
@@ -40,16 +42,19 @@ func (e *Encoder) Encode(h Header, args []interface{}) (err error) {
 	buffers, err = e.writePacket(w, h, args)
 
 	if err != nil {
+		fmt.Println("Write packet err: ", err)
 		return
 	}
 
 	for _, b := range buffers {
 		w, err = e.w.NextWriter(engineio.BINARY)
 		if err != nil {
+			fmt.Println("Buffers next writer err: ", err)
 			return
 		}
 		err = e.writeBuffer(w, b)
 		if err != nil {
+			fmt.Println("Write buffer err: ", err)
 			return
 		}
 	}
