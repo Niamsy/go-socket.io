@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"reflect"
 	"strings"
+	"sync"
 
 	engineio "github.com/googollee/go-engine.io"
 )
@@ -20,6 +21,7 @@ type FrameReader interface {
 
 type Decoder struct {
 	r FrameReader
+	mux sync.Mutex
 
 	lastFrame    io.ReadCloser
 	packetReader byteReader
@@ -30,6 +32,7 @@ type Decoder struct {
 func NewDecoder(r FrameReader) *Decoder {
 	return &Decoder{
 		r: r,
+		mux: sync.Mutex{},
 	}
 }
 
@@ -56,6 +59,8 @@ func (d *Decoder) DiscardLast() (err error) {
 }
 
 func (d *Decoder) DecodeHeader(header *Header, event *string) error {
+	d.mux.Lock()
+	defer d.mux.Unlock()
 	ft, r, err := d.r.NextReader()
 	if err != nil {
 		fmt.Println("Next reader err: ", err)
