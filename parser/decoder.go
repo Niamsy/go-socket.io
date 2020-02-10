@@ -6,13 +6,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	engineio "github.com/googollee/go-engine.io"
 	"io"
 	"io/ioutil"
 	"reflect"
 	"strings"
-	"sync"
-
-	engineio "github.com/googollee/go-engine.io"
 )
 
 type FrameReader interface {
@@ -31,7 +29,6 @@ type Decoder struct {
 func NewDecoder(r FrameReader) *Decoder {
 	return &Decoder{
 		r: r,
-		mux: sync.Mutex{},
 	}
 }
 
