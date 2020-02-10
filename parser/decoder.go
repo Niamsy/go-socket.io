@@ -21,7 +21,6 @@ type FrameReader interface {
 
 type Decoder struct {
 	r FrameReader
-	mux sync.Mutex
 
 	lastFrame    io.ReadCloser
 	packetReader byteReader
@@ -59,8 +58,6 @@ func (d *Decoder) DiscardLast() (err error) {
 }
 
 func (d *Decoder) DecodeHeader(header *Header, event *string) error {
-	d.mux.Lock()
-	defer d.mux.Unlock()
 	ft, r, err := d.r.NextReader()
 	if err != nil {
 		fmt.Println("Next reader err: ", err)
